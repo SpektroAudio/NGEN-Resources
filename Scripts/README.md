@@ -1,6 +1,6 @@
 # NGEN - Scripts
 
-These are some of the scripts that we use internally that can be useful for more advanced NGEN users.
+These are some of the Python scripts that we use internally that can be useful for more advanced NGEN users.
 
 - **NGEN_DrumGenTemplate.py**: A GUI editor for creating templates for the DRUMGEN generator.
 - **NGEN_Display.py**: Utility to mirror NGEN's display, take screenshots and record videos.

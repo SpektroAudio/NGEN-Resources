@@ -1,3 +1,10 @@
+# NGEN Display
+
+# Developed by Spektro Audio
+# spektroaudio.com
+
+# 03/2023
+
 import serial
 from rich.console import Console
 import time
@@ -14,10 +21,6 @@ import subprocess
 newConsole = Console()
 
 last_buffer = []
-
-# ser = serial.Serial('/dev/cu.usbmodem84316801')  # open serial port
-
-# print(ser.name)         # check which port was really used
 
 SAVE_VIDEO = False
 
@@ -104,7 +107,7 @@ class App:
 
                 # Set the color based on the value of the cell
                 if value == 1:
-                    # print("{} / {}".format(x, y))
+                    
                     # Draw the cell on the display
                     pygame.draw.rect(self.display, (255, 255, 255), pygame.Rect(x, y, self.scale, self.scale))
         if SAVE_VIDEO:
@@ -172,8 +175,6 @@ def savePNG(s):
     print("Saving screenshot PNG file...")
 
     s = [[int(c) for c in row] for row in s]
-
-    # print(str(s))
     new = []
     counter = 0
     scale = 2
@@ -187,10 +188,6 @@ def savePNG(s):
                 new_line.append(x)
         for t in range(scale):
             new.append(new_line)
-
-    # if buffer != last_buffer:
-    #     last_buffer = buffer
-        # filename = input("Enter file name: ")
     filename = "img_{}".format(str(file_index).zfill(4))
     w = png.Writer(len(new[0]), len(new), greyscale=True, bitdepth=1)
     filepath = '{}{}.png'.format(files_location, filename)
@@ -199,13 +196,8 @@ def savePNG(s):
     f.close()
     png_files.append(filepath)
     file_index += 1
-    # print("Screenshot saved: " + filepath)
-
-
-# createFolder(sys.path[0] + '/output/' + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
 
 def printBuffer(buffer):
-    # print("Updating buffer...")
     global last_buffer
     new_buffer = []
     for i in buffer:
@@ -216,7 +208,6 @@ def printBuffer(buffer):
     last_buffer = new_buffer
     if (SAVE_VIDEO):
         savePNG(new_buffer)
-    # print(last_buffer)
 
 
 def getSerialPort():
@@ -242,29 +233,18 @@ def SerialThread(rl):
             if int(line) == 1010001:
                 receiving = True
                 buffer = []
-                # print("Receiving screenshot...")
                 
             if receiving:
                 if int(line) == 1010002:
-                    # print("NEW LINE...")
                     line_buff = ""
                 elif int(line) == 1010003:
-                    # print("APPENDING PREVIOUS LINE...")
                     buffer.append(line_buff)
-                    # print(line_buff)
                 elif int(line) == 1010004:
                     receiving = False
-                    # print(str(len(buffer)))
                     printBuffer(buffer)
                 
                 else:
                     line_buff += str(int(line)) 
-                    # print(line)
-            # else:
-                # newConsole.print(line)
-
-                # if int(line) == 1010005 and file_index > 0 and SAVE_VIDEO:
-                #     exportMP4()
         except:
             pass
 
@@ -277,7 +257,6 @@ if __name__ == "__main__" :
     printHeader()
     serial_port = getSerialPort()
     createSerialThread(serial_port)
-    # randomizeBuffer()
     theApp = App()
     theApp.on_execute()
     

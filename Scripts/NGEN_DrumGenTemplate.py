@@ -1,3 +1,10 @@
+# DRUMGEN TEMPLATE GENERATOR
+
+# Developed by Spektro Audio
+# spektroaudio.com
+
+# 03/2023
+
 import dearpygui.dearpygui as dpg
 import math
 import random
@@ -5,7 +12,7 @@ from numpy import spacing
 import sys
 
 dpg.create_context()
-dpg.create_viewport(title='Custom Title', width=1400, height=800)
+dpg.create_viewport(title='DrumGen Template Creator', width=1400, height=800)
 
 MAX_STEP_VALUE = 10
 VELOCITIES = ["127", "80 ", "30 "]
@@ -121,7 +128,6 @@ def openHexFile(sender, app_data):
 
 def createHexFile():
     seq_array = []
-    # row = row[0].split(",")
     row_counter = 0
     columns = 32
     for i in range(192):
@@ -131,12 +137,8 @@ def createHexFile():
         for r in range(3):
             for c in range(32):
                 byte_num = math.floor(c / 2)
-                # print(row[c])
-                
                 step_value = int(dpg.get_value("{}_{}_{}".format(p, r, c)))
-                
                 index = byte_num + (row_counter * 16)
-                # print(str(index) + ": " + str(step_value))
                 if c % 2 == 0:
                     seq_array[index] = (step_value % 16) & 15
                 else:
@@ -226,14 +228,11 @@ with dpg.window(label="DRUMGEN Template Creator", width=1080) as f:
                             dpg.add_slider_int(tag=alias, label="", default_value=0, vertical=True, max_value=10, min_value=0, height=34, width=16)
                             dpg.bind_item_theme(dpg.last_item(), "theme_{}".format(p))
                     dpg.add_spacer(height=vert_space / 4) 
-        #     for j in range(5):
         dpg.add_separator()
 
-        
-        #         dpg.add_checkbox(label="Checkbox {}".format(j))
-                # dpg.add_slider_float(label="float", default_value=0.273, max_value=1)
 
-dpg.setup_dearpygui()
-dpg.show_viewport()
-dpg.start_dearpygui()
-dpg.destroy_context()
+if __name__ == "__main__":
+    dpg.setup_dearpygui()
+    dpg.show_viewport()
+    dpg.start_dearpygui()
+    dpg.destroy_context()
