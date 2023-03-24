@@ -1,12 +1,14 @@
-# NGEN - Algoritihmic MIDI Workstation - Support Repo
-
----
+# NGEN - Algoritihmic MIDI Workstation Resources
 
 ## About this Repository
 
-This repository contains files related to [NGEN](http://spektroaudio/ngen) such as factory content for the microSD card, printable 3D models and Python scripts.
+This repository contains files related to [NGEN](http://spektroaudio/ngen) that can be used to create additional parts for NGEN or to further extend its functionality.
 
-These files can be used to create additional parts for NGEN or to further extend NGEN's usability.
+**Content:**
+- Scripts: Python scripts to generate additional content for NGEN
+- MicroSD Factory Content: Factory content for the microSD card (DrumGen templates).
+- STL Files: Printable 3D models for NGEN.
+
 
 ---
 
@@ -19,5 +21,10 @@ It offers a completely new way of creating and performing music by abstracting t
 
 For more information about NGEN, visit [https://spektroaudio.com/ngen](https://spektroaudio.com/ngen).
 
+
+
 ---
 
+
+**Spektro Audio**  
+[https://spektroaudio.com/](https://spektroaudio.com/)
