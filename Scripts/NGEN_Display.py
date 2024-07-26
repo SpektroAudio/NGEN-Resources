@@ -9,7 +9,7 @@ import serial
 from rich.console import Console
 import time
 import png
-import sys
+import sys      
 import datetime
 import time
 import os
@@ -30,15 +30,8 @@ line_buff = ""
 file_index = 0
 files_location = sys.path[0] + '/output/'
 png_files = []
+new_frame_available = False
 
-
-def randomizeBuffer():
-    global last_buffer
-    last_buffer = []
-    for i in range(64):
-        last_buffer.append([])
-        for j in range(128):
-            last_buffer[i].append(1)
 
 def printHeader():
     newConsole.print("""[bold green]
@@ -60,7 +53,7 @@ class App:
     def __init__(self):
         self._running = True
         self.scale = 4
-        self.size = self.width, self.height = 150 * self.scale, 84 * self.scale
+        self.size = self.width, self.height = 147 * self.scale, 84 * self.scale
         self.display = pygame.display.set_mode((self.width, self.height))
         self.lastDrawnBuffer = []
  
@@ -91,42 +84,46 @@ class App:
             self._running = False
 
 
-    def on_loop(self):
-        pass
+
     def on_render(self):
-        pygame.draw.rect(self.display, (0, 0, 0), pygame.Rect(0, 0, self.width, self.height))
-        for row in range(len(last_buffer)):
-            for col in range(len(last_buffer[0])):
-            # Calculate the x and y position of the cell
-                x = col * self.scale
-                y = row * self.scale
+        global new_frame_available
+        try:
+            pygame.draw.rect(self.display, (0, 0, 0), pygame.Rect(0, 0, self.width, self.height))
 
-                # Get the value of the cell
-                value = last_buffer[row][col]
-                
+            for row in range(len(last_buffer)):
+                for col in range(len(last_buffer[0])):
+                # Calculate the x and y position of the cell
+                    x = col * self.scale
+                    y = row * self.scale
 
-                # Set the color based on the value of the cell
-                if value == 1:
-                    
-                    # Draw the cell on the display
-                    pygame.draw.rect(self.display, (255, 255, 255), pygame.Rect(x, y, self.scale, self.scale))
-        if SAVE_VIDEO:
-            pygame.draw.ellipse(self.display, (255, 0, 0), pygame.Rect(10, 10, 10 * self.scale, 10 * self.scale))
-        self.lastDrawnBuffer = last_buffer
+                    # Get the value of the cell
+                    value = last_buffer[row][col]
+                    # Set the color based on the value of the cell
+                    if value == 1:
+                        # Draw the cell on the display
+                        pygame.draw.rect(self.display, (255, 255, 255), pygame.Rect(x, y, self.scale, self.scale))
+            if SAVE_VIDEO:
+                pygame.draw.ellipse(self.display, (255, 0, 0), pygame.Rect(10, 10, 10 * self.scale, 10 * self.scale))
+            self.lastDrawnBuffer = last_buffer
+        except:
+            pass
         pygame.display.update()
+        new_frame_available = False
 
     def on_cleanup(self):
         pygame.quit()
  
     def on_execute(self):
+        global new_frame_available
         if self.on_init() == False:
             self._running = False
  
         while( self._running ):
             for event in pygame.event.get():
                 self.on_event(event)
-            self.on_loop()
-            self.on_render()
+            if new_frame_available:
+                self.on_render()
+            time.sleep(0.005)
         self.on_cleanup()
 
 class ReadLine:
@@ -199,6 +196,7 @@ def savePNG(s):
 
 def printBuffer(buffer):
     global last_buffer
+    global new_frame_available
     new_buffer = []
     for i in buffer:
         row = []
@@ -208,6 +206,7 @@ def printBuffer(buffer):
     last_buffer = new_buffer
     if (SAVE_VIDEO):
         savePNG(new_buffer)
+    new_frame_available = True
 
 
 def getSerialPort():
@@ -226,26 +225,31 @@ def getSerialPort():
     return rl
 
 def SerialThread(rl):
+    global receiving
     global buffer
+    line_buff = []
     while True:
-        line = rl.readline().decode("UTF-8")
+        line = rl.readline().decode("UTF-8").strip()
         try:
-            if int(line) == 1010001:
+            if line.strip() == "1010001":
+                # print("start")
                 receiving = True
                 buffer = []
                 
             if receiving:
                 if int(line) == 1010002:
-                    line_buff = ""
+                    line_buff = []
                 elif int(line) == 1010003:
-                    buffer.append(line_buff)
+                    for l in line_buff:
+                        buffer.append(l)
                 elif int(line) == 1010004:
                     receiving = False
                     printBuffer(buffer)
                 
                 else:
-                    line_buff += str(int(line)) 
+                    line_buff.append(line)
         except:
+            # newConsole.print_exception()
             pass
 
 def createSerialThread(rl):
@@ -259,4 +263,3 @@ if __name__ == "__main__" :
     createSerialThread(serial_port)
     theApp = App()
     theApp.on_execute()
-    

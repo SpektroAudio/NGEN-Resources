@@ -230,7 +230,7 @@ with dpg.window(label="DRUMGEN Template Creator", width=1080) as f:
                     dpg.add_spacer(height=vert_space / 4) 
         dpg.add_separator()
 
-
+s
 if __name__ == "__main__":
     dpg.setup_dearpygui()
     dpg.show_viewport()
