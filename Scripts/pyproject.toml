@@ -1,0 +1,7 @@
+[project]
+name = "NGENScripts"
+version = "0.1.0"
+description = "Additional scripts for the Spektro Audio NGEN"
+readme = "README.md"
+requires-python = ">=3.11.11"
+dependencies = ["pyserial", "rich", "send2trash", "pygame", "pypng"]
